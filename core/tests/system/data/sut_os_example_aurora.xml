@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="temp/dtaf_logs/"/>
+    <suts>
+        <sut>
+            <platform type="commercial" boardname="WolfPass" name="purley"/>
+            <silicon>
+                <cpu>
+                    <family>SKX</family>
+                </cpu>
+                <pch>
+                    <family>LBG</family>
+                </pch>
+            </silicon>
+            <providers>
+                <ac>
+                    <driver>
+                        <redfish>
+                            <bmc_type>aurora</bmc_type>
+                            <blade>Blade2</blade>
+                            <safe_time>20</safe_time>
+                            <chassis_server>localhost</chassis_server>
+                            <chassis_port>92</chassis_port>
+                            <chassis_username>root</chassis_username>
+                            <chassis_password>initial0</chassis_password>
+                            <system_server>localhost</system_server>
+                            <system_port>5443</system_port>
+                            <system_username>admin</system_username>
+                            <system_password>initial0</system_password>
+                        </redfish>
+                    </driver>
+                    <timeout>
+                        <power_on>600</power_on>
+                        <power_off>120</power_off>
+                    </timeout>
+                </ac>
+                <sut_os name="Linux" subtype="RHEL" version="7.6" kernel="3.10" error="other">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <ssh>
+                            <credentials user="root" password="hitisdudley1$"/>
+                            <ipv4>localhost</ipv4>
+                            <port>4022</port>
+                        </ssh>
+                    </driver>
+                    <timeout>
+                        <power_on>10</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </sut_os>
+                <log>
+                    <runwith/>
+                    <logpath>C:\temp\czhao\console_logs</logpath>
+                    <driver>
+                        <sol>
+                            <address>localhost</address>
+                            <port>2022</port>
+                            <timeout>120</timeout>
+                            <credentials user="root" password="0penBmc"/>
+                        </sol>
+                    </driver>
+                </log>
+            </providers>
+        </sut>
+    </suts>
+</core>

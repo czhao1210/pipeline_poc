@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="C:\temp\dtaf_logs\"/>
+    <host>
+        <logging format="jUnit"/>
+        <root>C:\workspace</root>
+        <os name="Windows" version="10">
+            <kernel version="10.0.14393"/>
+        </os>
+    </host>
+    <suts>
+        <sut ip="10.13.168.111">
+            <platform type="commercial" boardname="WolfPass" name="purley"/>
+            <silicon>
+                <cpu>
+                    <family>SKX</family>
+                </cpu>
+                <pch>
+                    <family>LBG</family>
+                </pch>
+            </silicon>
+            <providers>
+                <ac>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                    <driver>
+                                             <pdu brand="raritan" model="px-5052R">
+                            <groups>
+                                <group>
+                                    <ip>10.239.128.xxx</ip>
+                                    <port>22</port>
+                                    <username>testuser</username>
+                                    <password>Raspsh2020</password>
+                                    <timeout>
+                                        <powerstate>20</powerstate>
+                                        <invoke>5</invoke>
+                                    </timeout>
+                                    <outlets>
+                                        <outlet>4</outlet>
+                                    </outlets>
+                                </group>
+                            </groups>
+                       </pdu>
+                    </driver>
+                </ac>
+            </providers>
+        </sut>
+    </suts>
+</core>

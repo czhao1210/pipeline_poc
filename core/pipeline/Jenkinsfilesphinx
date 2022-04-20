@@ -1,0 +1,229 @@
+#! groovy
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'release', defaultValue: 'origin/master', description: 'release tag')
+    }
+
+    environment {
+        GIT_COMMIT_EMAIL = get_latest_commit_email()
+        COMMIT_MESSAGE = get_commit_message()
+        HTTP_PROXY = "http://child-prc.intel.com:913"
+        HTTPS_PROXY = "http://child-prc.intel.com:913"
+        NO_PROXY = ".devtools.intel.com,.intel.com"
+        HARBOR = "amr-registry.caas.intel.com"
+        TAG = sh(returnStdout: true ,script: "git tag --sort=taggerdate| tail -1").trim()
+    }
+
+    stages {
+
+        stage('pages:agent_host'){
+            agent { label "centos8" }
+            steps {
+                script {
+                    sh '''
+                    ifconfig ens160
+                    '''
+                }
+            }
+        }
+
+        stage('pages:build docker image') {
+            agent {
+                docker {
+                    image "dtaf_ut:latest"
+                    args "-v /var/www/html:/root/web"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                   python3 -V
+                   pip3 install sphinx sphinx-rtd-theme xmltodict six artifactory paramiko
+                   sphinx-apidoc -o docs/source ./src/dtaf_core
+                   cd docs ; make html
+                   rm -rf /root/web/*
+                   cp -r ./build/html/* /root/web
+                '''
+            }
+        }
+
+        // stage('pages: deploy docker image to host'){
+        //    steps {
+        //        sh '''
+        //            docker stop $(docker ps -a -q)
+        //            docker rm $(docker ps -a -q)
+        //            docker run -dit -p 80:80  --name httpdtest -v /var/www/html/:/usr/local/apache2/htdocs/ --restart=always  httpd
+        //        '''
+        //    }
+        // }
+
+        stage("distribution") {
+            parallel {
+                stage("distribution:image") {
+                    agent {
+                        label "hytestnode"
+                    }
+
+                    stages {
+                        stage("distribution:image:to harbor") {
+                            steps {
+                                withCredentials([usernamePassword(credentialsId: 'amr_registry', passwordVariable: 'password', usernameVariable: 'username' )]){
+                                    sh '''
+                                    docker info
+                                    docker build -t ${HARBOR}/dtaf-framework-release/dtaf-core:${TAG} . -f dockerfiles/Dockerfile.py3
+                                    docker push ${HARBOR}/dtaf-framework-release/dtaf-core:${TAG}
+                                    '''
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                stage("distribution:dtafcore") {
+                    agent {
+                        label "dtafunittest"
+                    }
+
+                    stages {
+                    
+                        stage("distribution:dtafcore:download image"){
+                            steps {
+                                sh '''
+                                    docker info
+                                '''
+                            }
+                        
+                        }
+                    
+                        stage("distribution:dtafcore: upload dtafcore ") {
+                        //    agent {
+                        //        docker {
+                        //            image "10.239.220.119/dtaf/ut:latest"
+                        //            reuseNode true
+                        //        }
+                        //    }
+                            agent { label "centos8" }
+                            steps {
+                                sh '''
+                                    python3 -v
+                                    pip3 install --upgrade pip --proxy ${HTTP_PROXY}
+                                    pip3 install wheel twine -i https://pypi.tuna.tsinghua.edu.cn/simple --proxy ${HTTP_PROXY}
+                                    cp .pypirc.in ~/.pypirc
+                                    cp -r tests docs/*.docx docs/*.pdf src/dtaf_core
+                                    rm -rf dist/*
+                                    python3 setup.py sdist bdist_wheel
+                                    python3 -m twine upload dist/* -r devopspypi --verbose
+                                '''
+                                archiveArtifacts artifacts: '**/dist/*', fingerprint: true
+                            }
+                        }
+                    }
+                }
+            // distribution:sutagent
+            stage("distribution:sutagent") {
+                    agent {
+                        label "dtafunittest"
+                    }
+
+                    stages {
+                    
+                        stage("distribution:sutagent:download docker file"){
+                            steps {
+                                sh '''
+                                    docker info
+                                '''
+                            }
+                        
+                        }
+                    
+                        stage("distribution:sutagent: upload sutagent") {
+                        //    agent {
+                        //        docker {
+                        //            image "10.239.220.119/dtaf/ut:latest"
+                        //            reuseNode true
+                        //        }
+                        //    }
+                            agent { label "centos8" }
+                            steps {
+                                sh '''
+                                    python3 -v
+                                    pip3 install --upgrade pip --proxy ${HTTP_PROXY}
+                                    pip3 install wheel twine -i https://pypi.tuna.tsinghua.edu.cn/simple --proxy ${HTTP_PROXY}
+                                    cp .pypirc.in ~/.pypirc
+                                    cd src/sutagent
+                                    rm -rf dist/*
+                                    python3 setup.py sdist bdist_wheel
+                                    python3 -m twine upload dist/* -r devopspypi --verbose
+                                '''
+                                archiveArtifacts artifacts: '**/src/sutagent/dist/*', fingerprint: true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    post {
+        always {
+            echo 'One way or another, I have finished'
+            echo "${GIT_COMMIT_EMAIL}"
+            emailext (
+            body: '''${SCRIPT, template="groovy-html.template"}''',
+            mimeType: 'text/html',
+            subject: "[Jenkins]-> " + currentBuild.fullDisplayName,
+            to: "${GIT_COMMIT_EMAIL}",
+            replyTo: "${GIT_COMMIT_EMAIL}",
+            )
+            deleteDir() /* clean up our workspace */
+        }
+        success {
+            echo 'I succeeeded!'
+        }
+        unstable {
+            echo 'I am unstable :/'
+
+        }
+        failure {
+            echo "i am failure "
+            }
+        changed {
+            echo 'Things were different before...'
+        }
+    }
+
+}
+
+// get current commit message
+def get_commit_message() {
+    MAX_MSG_LEN = 100
+    def changeString = ""
+
+    echo "Gathering SCM changes"
+    def changeLogSets = currentBuild.changeSets
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length; j++) {
+            def entry = entries[j]
+            truncated_msg = entry.msg.take(MAX_MSG_LEN)
+            changeString += "${truncated_msg}"
+        }
+    }
+    if (!changeString) {
+        changeString = " - No new changes"
+    }
+    return changeString
+}
+
+// get latest commit email addr
+def get_latest_commit_email() {
+    def email = ""
+    email = sh (
+    script: "git --no-pager show -s --format='%ae' $GIT_COMMIT",
+    returnStdout: true
+).trim()
+    return email
+}

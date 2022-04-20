@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="C:\temp\dtaf_logs\" />
+    <host>
+        <logging format="jUnit"/>
+        <root>C:\workspace</root>
+        <os name="Windows" version="10">
+            <kernel version="10.0.14393" />
+        </os>
+    </host>
+    <suts>
+        <sut ip="10.190.179.183">
+            <platform type="commercial" boardname="WolfPass" name="purley" />
+            <silicon>
+                <cpu>
+                    <family>SKX</family>
+                </cpu>
+                <pch>
+                    <family>LBG</family>
+                </pch>
+            </silicon>
+            <providers>
+                <console/>
+                <sut_os name="Linux" subtype="RHEL" version="7.6" kernel="3.10">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <ssh>
+                            <credentials user="root" password="password"/>
+                            <ipv4>10.190.179.183</ipv4>
+                        </ssh>
+                    </driver>
+                </sut_os>
+                <uefi_shell>
+                    <driver>
+                        <sol>
+                            <address>0.0.0.0</address>
+                            <port>1101</port>
+                            <timeout>5</timeout>
+                            <credentials user="xxxx" password="xxxxx"/>
+                        </sol>
+                    </driver>
+                </uefi_shell>
+				<flash>
+					<driver>
+						<redfish>
+                            <bmc_type>dell</bmc_type>
+                            <ip>10.5.250.114</ip>
+                            <username>root</username>
+							<password>intel@123</password>
+                            <image_path_bmc>C:\BMC_IFWI_Image\</image_path_bmc>
+							<image_name_bmc>OBMC-egs-0.16-0-g6cb381-e37eb79-pfr-oob.bin</image_name_bmc>
+                        </redfish>
+                    </driver>
+				</flash>
+                <console_log>
+                    <runwith />
+                    <logpath>C:\temp\logs</logpath>
+                    <driver>
+                        <sol>
+                            <address>0.0.0.0</address>
+                            <port>1101</port>
+                            <timeout>5</timeout>
+                            <credentials user="xxxx" password="xxxxx"/>
+                        </sol>
+                    </driver>
+                </console_log>
+                <bios_setupmenu>
+                    <driver>
+                        <com>
+                            <baudrate>115200</baudrate>
+                            <port>COM100</port>
+                            <timeout>5</timeout>
+                        </com>
+                    </driver>
+                    <efishell_entry select_item="Launch EFI Shell">
+                        <path>
+                            <node>Setup Menu</node>
+                            <node>Boot Manager</node>
+                        </path>
+                    </efishell_entry>
+                    <continue select_item="Continue"/>
+                    <reset press_key="\\33R\\33r\\33R" parse="False"/>
+                </bios_setupmenu>
+                <bios_bootmenu>
+                    <driver>
+                        <com>
+                            <baudrate>115200</baudrate>
+                            <port>COM100</port>
+                            <timeout>5</timeout>
+                        </com>
+                    </driver>
+                    <efishell_entry select_item="Launch EFI Shell"/>
+                </bios_bootmenu>
+                 <bios>
+					<driver>
+						<xmlcli>
+							<sutospath>"/opt/APP/xmlcli/"</sutospath>
+							<bios_cfgfilepath>C:\Automation\</bios_cfgfilepath>
+							<bios_cfgfilename>neoncity.cfg</bios_cfgfilename>
+							<ip>10.227.88.26</ip>
+							<user>root</user>
+							<password>password</password>
+						</xmlcli>
+					</driver>
+                </bios>
+                <physical_control>
+					 <driver>
+						<redfish>
+                            <bmc_type>idrac</bmc_type>
+                            <ip>10.5.250.114</ip>
+                            <username>root</username>
+							<password>intel@123</password>
+                            <image_path_bmc>C:\BMC_IFWI_Image\</image_path_bmc>
+							<image_name_bmc>OBMC-egs-0.16-0-g6cb381-e37eb79-pfr-oob.bin</image_name_bmc>
+                        </redfish>
+                   </driver>
+                   <timeout>
+                        <usbswitch>4</usbswitch>
+                        <clearcmos>3</clearcmos>
+                   </timeout>
+                </physical_control>
+                 <ac>
+                   <driver>
+                       <pdurpc brand="pdurpc" model="PX3-5996U">
+                            <ip>10.190.249.196</ip>
+                            <port>22</port>
+                            <username>admin</username>
+                            <password>intel@123</password>
+                            <timeout>
+                                <powerstate>20</powerstate>
+                                <invoke>5</invoke>
+                            </timeout>
+                            <outlets>
+                                <outlet>4</outlet>
+                            </outlets>
+                       </pdurpc>
+                    </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>5</power_off>
+                    </timeout>
+                </ac>
+                <dc>
+                    <driver>
+						<redfish>
+							<ip>10.190.243.66</ip>
+                            <username>root</username>
+							<password>intel@123</password>
+						</redfish>
+                    </driver>
+                    <timeout>
+                        <power_on>2</power_on>
+                        <power_off>6</power_off>
+                    </timeout>
+                </dc>
+                <silicon_debug>
+                    <driver>
+                        <xdp type="ITP" />
+                    </driver>
+                </silicon_debug>
+                <silicon_reg>
+                    <driver>
+                        <cscripts>
+                            <debugger_interface_type>ITP</debugger_interface_type>
+                            <silicon>
+                                <cpu_family>SKX</cpu_family>
+                                <pch_family>LBG</pch_family>
+                            </silicon>
+                        </cscripts>
+                    </driver>
+                </silicon_reg>
+            </providers>
+        </sut>
+    </suts>
+</core>

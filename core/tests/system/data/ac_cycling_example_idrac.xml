@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="C:\temp\dtaf_logs\"/>
+    <suts>
+        <sut>
+            <providers>
+                <dc>
+                           <driver>
+                                <redfish>
+                                    <bmc_type>idrac</bmc_type>
+                                    <ip>10.239.58.191</ip>
+                                    <username>root</username>
+                                    <password>calvin</password>
+                                </redfish>
+                            </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </dc>
+            </providers>
+        </sut>
+    </suts>
+</core>

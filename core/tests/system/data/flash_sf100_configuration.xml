@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="C:\temp\dtaf_logs\" />
+    <host>
+        <logging format="jUnit"/>
+        <root>C:\workspace</root>
+        <os name="Windows" version="10">
+            <kernel version="10.0.14393" />
+        </os>
+    </host>
+    <suts>
+        <sut ip="10.239.128.233">
+            <platform type="commercial" boardname="WolfPass" name="purley" />
+            <silicon>
+                <cpu>
+                    <family>SKX</family>
+                </cpu>
+                <pch>
+                    <family>LBG</family>
+                </pch>
+            </silicon>
+            <providers>
+                <ac>
+                   <driver>
+                        <soundwave2k enable_s3_detect="False">
+                            <baudrate>115200</baudrate>
+                            <serial type="1"></serial>
+                            <port>COM101</port>
+                            <voltagethreholds>
+
+                                <main_power>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </main_power>
+                                <dsw>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </dsw>
+                                <memory>
+                                    <low>0.3</low>
+                                    <high>2.2</high>
+                                </memory>
+
+                            </voltagethreholds>
+                        </soundwave2k>
+                    </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </ac>
+                <flash>
+                    <driver>
+                        <sf100 cli_path="C:\Program Files (x86)\DediProg\SF Programmer\">
+                            <pch name="SF106223" chip="MX66L51235F" />
+                            <bmc name="SF113876" chip="MX66L1G45G" />
+                        </sf100>
+                    </driver>
+                </flash>
+            </providers>
+        </sut>
+    </suts>
+</core>

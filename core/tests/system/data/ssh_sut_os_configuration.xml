@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <suts>
+        <sut ip="10.13.168.111">
+            <providers>
+                <sut_os name="Linux" subtype="RHEL" version="7.6" kernel="3.10" error="false">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <ssh>
+                            <credentials user="root" password="password"/>
+                            <ipv4>10.239.173.79</ipv4>
+                        </ssh>
+                    </driver>
+                </sut_os>
+                <sut_os name="Linux" subtype="RHEL" version="7.6" kernel="3.10" error="true">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <ssh>
+                            <credentials user="root" password="password"/>
+                            <ipv4>10.239.173.111</ipv4>
+                        </ssh>
+                    </driver>
+                </sut_os>
+                <sut_os name="Linux" subtype="RHEL" version="7.6" kernel="3.10" error="other">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <ssh>
+                            <credentials user="root" password="password"/>
+                            <ipv4>10.239.173.79</ipv4>
+                            <script_execution>
+                                <server_path>/usr/local/lib/python3.6/site-packages/sutagent/</server_path>
+                                <enable>True</enable>
+                            </script_execution>
+                        </ssh>
+                    </driver>
+                </sut_os>
+                <ac>
+                    <driver>
+                        <soundwave2k enable_s3_detect="False">
+                            <baudrate>115200</baudrate>
+                            <serial type="1"/>
+                            <port>COM101</port>
+                            <voltagethreholds>
+                                <main_power>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </main_power>
+                                <dsw>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </dsw>
+                                <memory>
+                                    <low>0.3</low>
+                                    <high>2.2</high>
+                                </memory>
+                            </voltagethreholds>
+                        </soundwave2k>
+                    </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </ac>
+                <dc>
+                    <driver>
+                        <soundwave2k enable_s3_detect="False">
+                            <baudrate>115200</baudrate>
+                            <serial type="1"></serial>
+                            <port>COM101</port>
+                            <voltagethreholds>
+
+                                <main_power>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </main_power>
+                                <dsw>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </dsw>
+                                <memory>
+                                    <low>0.3</low>
+                                    <high>2.2</high>
+                                </memory>
+
+                            </voltagethreholds>
+                        </soundwave2k>
+                    </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </dc>
+            </providers>
+        </sut>
+    </suts>
+</core>

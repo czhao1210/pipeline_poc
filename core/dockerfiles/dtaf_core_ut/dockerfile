@@ -1,0 +1,23 @@
+### from ubuntu image ###
+FROM python:3.7
+
+### container code ###
+ENV LANG=en_US.UTF-8
+
+### time zone:Shanghai ###
+ENV TZ Asia/Shanghai
+
+### member information ###
+MAINTAINER xingping <xingpingx.xu@intel.com>
+
+### environment variable ###
+ENV http_proxy=http://child-prc.intel.com:913 \
+    https_proxy=http://child-prc.intel.com:913
+
+ADD pip.conf /etc
+ADD requirements_ut_py37.txt /root
+
+### install python package ###
+RUN pip3 install --upgrade pip \
+    && pip3 install -r /root/requirements_ut_py37.txt
+

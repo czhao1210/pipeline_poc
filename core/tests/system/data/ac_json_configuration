@@ -1,0 +1,70 @@
+{
+  "core": {
+    "log": {
+      "@path": "C:\\temp\\dtaf_logs\\"
+    },
+    "host": {
+      "logging": {
+        "@format": "jUnit"
+      },
+      "root": "C:\\workspace",
+      "os": {
+        "@name": "Windows",
+        "@version": "10",
+        "kernel": {
+          "@version": "10.0.14393"
+        }
+      }
+    },
+    "suts": {
+      "sut": {
+        "@ip": "10.13.168.111",
+        "platform": {
+          "@type": "commercial",
+          "@boardname": "WolfPass",
+          "@name": "purley"
+        },
+        "silicon": {
+          "cpu": {
+            "family": "SKX"
+          },
+          "pch": {
+            "family": "LBG"
+          }
+        },
+        "providers": {
+          "ac": {
+            "driver": {
+              "soundwave2k": {
+                "@enable_s3_detect": "False",
+                "baudrate": "115200",
+                "serial": {
+                  "@type": "1"
+                },
+                "port": "COM101",
+                "voltagethreholds": {
+                  "main_power": {
+                    "low": "0.8",
+                    "high": "2.85"
+                  },
+                  "dsw": {
+                    "low": "0.8",
+                    "high": "2.85"
+                  },
+                  "memory": {
+                    "low": "0.3",
+                    "high": "2.2"
+                  }
+                }
+              }
+            },
+            "timeout": {
+              "power_on": "5",
+              "power_off": "20"
+            }
+          }
+        }
+      }
+    }
+  }
+}

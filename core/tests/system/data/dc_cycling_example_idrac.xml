@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="C:\temp\dtaf_logs\"/>
+    <suts>
+        <sut>
+            <providers>
+                <ac>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                    <driver>
+                        <pdu brand="raritan" model="px-5052R">
+                            <ip>192.168.1.119</ip>
+                            <port>22</port>
+                            <username>admin</username>
+                            <password>xxx</password>
+                            <timeout>
+                                <powerstate>20</powerstate>
+                                <invoke>5</invoke>
+                            </timeout>
+                            <outlets>
+                                <outlet>9</outlet>
+                                <outlet>10</outlet>
+                            </outlets>
+                        </pdu>
+                    </driver>
+                </ac>
+                <dc>
+                           <driver>
+                                <redfish>
+                                    <bmc_type>idrac</bmc_type>
+                                    <ip>10.239.58.191</ip>
+                                    <username>root</username>
+                                    <password>calvin</password>
+                                </redfish>
+                            </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </dc>
+            </providers>
+        </sut>
+    </suts>
+</core>

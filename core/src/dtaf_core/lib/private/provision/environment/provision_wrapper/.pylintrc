@@ -1,0 +1,11 @@
+[MASTER]
+# Add PYTHONPATH on script's root to avoid import errors
+init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(os.path.dirname(find_pylintrc()))"
+
+[FORMAT]
+# Default 100 is too short for argparse helpstrings
+max-line-length=120
+
+[BASIC]
+# Wrapper's structure does not require public methods, but using classes is a good choice
+min-public-methods=0

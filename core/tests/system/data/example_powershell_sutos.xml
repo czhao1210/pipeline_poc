@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="dtaf_logs"/>
+    <suts>
+        <sut>
+            <providers>
+                <sut_os name="Linux" subtype="RHEL" version="7.6" kernel="3.10">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <powershell>
+                            <host>
+                                <name>czhao-mobl1</name>
+                                <username>czhao</username>
+                                <password>&amp;m&amp;</password>
+                            </host>
+                        </powershell>
+                    </driver>
+                </sut_os>
+
+                <ac>
+                    <driver>
+                        <soundwave2k enable_s3_detect="False">
+                            <baudrate>115200</baudrate>
+                            <serial type="1" />
+                            <port>COM101</port>
+                            <voltagethreholds>
+                                <main_power>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </main_power>
+                                <dsw>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </dsw>
+                                <memory>
+                                    <low>0.3</low>
+                                    <high>2.2</high>
+                                </memory>
+                            </voltagethreholds>
+                        </soundwave2k>
+                    </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </ac>
+            </providers>
+        </sut>
+    </suts>
+</core>

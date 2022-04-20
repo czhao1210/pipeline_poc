@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="C:\temp\dtaf_logs\" />
+    <host>
+        <logging format="jUnit"/>
+        <root>C:\workspace</root>
+        <os name="Windows" version="10">
+            <kernel version="10.0.14393" />
+        </os>
+    </host>
+    <suts>
+        <sut ip="localhost">
+            <platform type="commercial" boardname="WolfPass" name="purley" />
+            <silicon>
+                <cpu>
+                    <family>SKX</family>
+                </cpu>
+                <pch>
+                    <family>LBG</family>
+                </pch>
+            </silicon>
+            <providers>
+                <console/>
+                <sut_os name="Linux" subtype="RHEL" version="7.6" kernel="3.10">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <ssh>
+                            <credentials user="root" password="password"/>
+                            <ipv4>10.190.191.196</ipv4>
+                        </ssh>
+                    </driver>
+                </sut_os>
+                <sut_os name="Windows" subtype="Win" version="10" kernel="3.10">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <com>
+                            <baudrate>115200</baudrate>
+                            <port>COM4</port>
+                        </com>
+                    </driver>
+                </sut_os>
+                <sut_os name="Linux" subtype="CentOS" version="7.6" kernel="3.10">
+                    <shutdown_delay>5.0</shutdown_delay>
+                    <driver>
+                        <socket>
+                            <ipv4>10.13.168.111</ipv4>
+                        </socket>
+                    </driver>
+                </sut_os>
+                <uefi_shell>
+                    <driver>
+                        <sol>
+                            <address>0.0.0.0</address>
+                            <port>1101</port>
+                            <timeout>5</timeout>
+                            <credentials user="xxxx" password="xxxxx"/>
+                        </sol>
+                    </driver>
+                </uefi_shell>
+                <console_log>
+                    <runwith />
+                    <logpath>C:\temp\logs</logpath>
+                    <driver>
+                        <sol>
+                            <address>0.0.0.0</address>
+                            <port>1101</port>
+                            <timeout>5</timeout>
+                            <credentials user="xxxx" password="xxxxx"/>
+                        </sol>
+                    </driver>
+                </console_log>
+                <bios_setupmenu>
+                    <driver>
+                        <com>
+                            <baudrate>115200</baudrate>
+                            <port>COM100</port>
+                            <timeout>5</timeout>
+                        </com>
+                    </driver>
+                    <efishell_entry select_item="Launch EFI Shell">
+                        <path>
+                            <node>Setup Menu</node>
+                            <node>Boot Manager</node>
+                        </path>
+                    </efishell_entry>
+                    <continue select_item="Continue"/>
+                    <reset press_key="\\33R\\33r\\33R" parse="False"/>
+                </bios_setupmenu>
+                <bios_bootmenu>
+                    <driver>
+                        <com>
+                            <baudrate>115200</baudrate>
+                            <port>COM100</port>
+                            <timeout>5</timeout>
+                        </com>
+                    </driver>
+                    <efishell_entry select_item="Launch EFI Shell"/>
+                </bios_bootmenu>
+                <bios>
+					<driver>
+						<xmlcli>
+							<sutospath>"/opt/APP/xmlcli/"</sutospath>
+							<bios_cfgfilepath>C:\biosxml\</bios_cfgfilepath>
+							<bios_cfgfilename>neoncity.cfg</bios_cfgfilename>
+							<ip>10.190.191.121</ip>
+							<user>root</user>
+							<password>password</password>
+						</xmlcli>
+					</driver>
+                </bios>
+                <physical_control>
+                    <timeout>
+                        <usbswitch>4</usbswitch>
+                        <clearcmos>3</clearcmos>>
+                    </timeout>
+                </physical_control>
+                <pi>
+                    <driver>
+                        <raspberry>
+                            <ip>10.190.179.119</ip>
+                            <port>80</port>
+                            <proxy>http://child-prc.intel.com:913</proxy>
+                        </raspberry>
+                    </driver>
+                </pi>
+                <ac>
+                   <driver>
+                        <soundwave2k enable_s3_detect="False">
+                            <baudrate>115200</baudrate>
+                            <serial type="1"></serial>
+                            <port>COM101</port>
+                            <voltagethreholds>
+
+                                <main_power>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </main_power>
+                                <dsw>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </dsw>
+                                <memory>
+                                    <low>0.3</low>
+                                    <high>2.2</high>
+                                </memory>
+
+                            </voltagethreholds>
+                        </soundwave2k>
+                    </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </ac>
+<!--                <dc>-->
+<!--                    <driver>-->
+<!--                        <banino>-->
+<!--                            <dllpath>-->
+
+<!--                            </dllpath>-->
+<!--                        </banino>-->
+<!--                    </driver>-->
+<!--                    <timeout>-->
+<!--                        <power_on>5</power_on>-->
+<!--                        <power_off>20</power_off>-->
+<!--                    </timeout>-->
+<!--                </dc>-->
+                <dc>
+                    <driver>
+                        <soundwave2k enable_s3_detect="False">
+                            <baudrate>115200</baudrate>
+                            <serial type="1"></serial>
+                            <port>COM101</port>
+                            <voltagethreholds>
+
+                                <main_power>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </main_power>
+                                <dsw>
+                                    <low>0.8</low>
+                                    <high>2.85</high>
+                                </dsw>
+                                <memory>
+                                    <low>0.3</low>
+                                    <high>2.2</high>
+                                </memory>
+
+                            </voltagethreholds>
+                        </soundwave2k>
+                    </driver>
+                    <timeout>
+                        <power_on>5</power_on>
+                        <power_off>20</power_off>
+                    </timeout>
+                </dc>
+                <simics>
+                    <driver>
+                        <com>
+                            <baudrate>115200</baudrate>
+                            <port>COM100</port>
+                            <timeout>5</timeout>
+                        </com>
+                    </driver>
+                    <telnet_port>2121</telnet_port>
+                    <serial_log>c:\workspace\serial.log</serial_log>
+                    <workspace>c:\workspace</workspace>
+                    <simics_path>C:\Program Files\Simics\Simics 5\Simics 5.0.139\win64\bin</simics_path>
+                </simics>
+                <silicon_debug>
+                    <driver>
+                        <xdp type="ITP" />
+                    </driver>
+                </silicon_debug>
+                <silicon_reg>
+                    <driver>
+                        <cscripts>
+                            <debugger_interface_type>ITP</debugger_interface_type>
+                            <silicon>
+                                <cpu_family>SKX</cpu_family>
+                                <pch_family>LBG</pch_family>
+                            </silicon>
+                        </cscripts>
+                    </driver>
+                </silicon_reg>
+                <flash>
+                    <driver>
+                        <em100 type="emulator">
+                            <pch chip="W25Q256FV" usb_ports="1,2" />
+                            <bmc chip="W25Q256FV" usb_ports="3,4" />
+                        </em100>
+                    </driver>
+                </flash>
+                <flash_emulator>
+                    <driver>
+                        <em100 type="emulator" cli_path="C:\Program Files (x86)\DediProg\EM100\">
+                            <pch chip="W25Q256FV" usb_ports="1,2" />
+                            <bmc chip="W25Q256FV" usb_ports="3,4" />
+                        </em100>
+                    </driver>
+                </flash_emulator>
+            </providers>
+        </sut>
+    </suts>
+</core>

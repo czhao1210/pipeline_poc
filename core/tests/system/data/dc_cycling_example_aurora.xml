@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <log path="C:\temp\dtaf_logs\"/>
+    <suts>
+        <sut>
+            <providers>
+                <ac>
+                    <timeout>
+                        <power_on>600</power_on>
+                        <power_off>150</power_off>
+                    </timeout>
+                    <driver>
+                        <redfish>
+                            <bmc_type>aurora</bmc_type>
+                            <blade>Blade2</blade>
+                            <safe_time>20</safe_time>
+                        </redfish>
+                    </driver>
+                </ac>
+                <dc>
+                   <driver>
+                        <redfish>
+                            <bmc_type>aurora</bmc_type>
+                            <blade>Blade2</blade>
+                            <safe_time>20</safe_time>
+                        </redfish>
+                    </driver>
+                    <timeout>
+                        <power_on>30</power_on>
+                        <power_off>30</power_off>
+                    </timeout>
+                </dc>
+            </providers>
+        </sut>
+    </suts>
+</core>
