@@ -1,22 +1,37 @@
 import sqlite3
 
 sql_script= """
-create table capi(
+create table if not exists
+capi(
     id integer primary key not null,
+    seq_num int not null,
     infra text not null,
     sut text not null,
     server
 );
-insert into capi values(1, "emr-capi", "sut0", "capi_server_url");
-
-create table simics(
+create table if not exists
+simics(
     id integer primary key,
-    infra, 
-    host_address
+    seq_num int not null,
+    infra text not null,
+    sut text not null,
+    real_time text,
+    serial_port int not null,
+    host_name text,
+    host_port text,
+    host_username text,
+    host_password text,
+    service_port int,
+    os,
+    network_user text,
+    network_password text,
+    app text,
+    project text,
+    script text
 );
-insert into simics values(1, "simcloud", "host_addr0");
 
-create table bmc(
+create table if not exists
+ bmc(
     id integer primary key,
     seq_num int not null,
     infra text not null,
@@ -26,9 +41,21 @@ create table bmc(
     username text not null,
     password text not null    
 );
-insert into bmc values(1,0, "emr", "sut0", "127.0.0.1", "5000", "user", "password");
 
-create table pdu(
+create table if not exists
+ ssh(
+    id integer primary key,
+    seq_num int not null,
+    infra text not null,
+    sut text not null,
+    hostname text not null,
+    port text not null,
+    username text not null,
+    password text not null    
+);
+
+create table  if not exists
+pdu(
     id integer primary key,
     seq_num int not null,
     infra text not null,
@@ -40,8 +67,17 @@ create table pdu(
     outlets text not null,
     type text not null    
 );
-insert into pdu values(1, 0, "emr", "sut0", "0.0.0.0", "22", "user", "password", "10, 11, 12","raritan");
-insert into pdu values(2, 1, "emr", "sut0", "0.0.0.0", "22", "user", "password", "20,21","raritan");
+
+create table if not exists
+impl(
+    id integer primary key,
+    config_name text not null,
+    infra text,
+    provider_name text not null,
+    label text,
+    use text not null,
+    parameters text   
+);
 
 """
 
@@ -58,7 +94,7 @@ class Connection(object):
         #self.__con = sqlite3.connect(r":memory:")
         self.__con = sqlite3.connect(r"config.db")
         self.__cur = self.__con.cursor()
-        #self.__cur.executescript(sql_script)
+        self.__cur.executescript(sql_script)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -96,6 +132,39 @@ class Connection(object):
         ret = self.query(sql)
         return ret if ret else list()
 
+    def suggest_id(self, table_name):
+        sql = f"""
+        select max(id) as max_id from {table_name};
+        """
+        ret = self.query(sql)
+        return ret[0]["max_id"] + 1 if ret[0]["max_id"] is not None else 1
+
+    def filter_impl(self, config_name, infra):
+        sql = f"""
+        select * from impl
+        where config_name="{config_name}" and infra="{infra}" order by provider_name asc;
+        """
+        ret = self.query(sql)
+        return ret if ret else list()
+
+    def remove_generic(self, table_name, **kwargs):
+        where_clause = list()
+        for k, v in kwargs.items():
+            if isinstance(v, str):
+                where_clause.append(f"{k}=\"{v}\"")
+            elif v is not None:
+                where_clause.append(f"{k}={v}")
+        if where_clause:
+            sql = f"""
+            DELETE FROM {table_name}
+            WHERE {" AND ".join(where_clause)};
+            """
+        else:
+            sql = f"""
+            DELETE FROM {table_name};
+            """
+        ret = self.query(sql)
+        return ret if ret else list()
 
     def filter_device(self, infra, sut, device):
         sql = f"""
@@ -130,15 +199,13 @@ class Connection(object):
         values = list()
         for k, v in data_model.data.items():
             keys.append(k)
-            if isinstance(v, str):
-                values.append(f"\"{v}\"")
-            else:
-                values.append(f"{v}")
+            values.append(v)
+
         sql = f"""
-        INSERT INTO {type(data_model).__name__.lower()} ({",".join(keys)}) VALUES ({",".join(values)});
+        INSERT INTO {type(data_model).__name__.lower()} ({",".join(keys)}) VALUES ({",".join("?"*len(values))});
         """
         try:
-            self.__cur.execute(sql)
+            self.__cur.execute(sql, values)
         except sqlite3.OperationalError as ex:
             print(f"ex={ex},sql={sql}")
 

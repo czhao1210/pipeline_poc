@@ -1,4 +1,5 @@
 import abc
+import json
 class DataModel(object):
     def __init__(self, data):
         self._data = data
@@ -62,6 +63,31 @@ class Bmc(DataModel):
         json_data.pop("seq_num")
         return json_data
 
+
+class Ssh(DataModel):
+    def __init__(self, data):
+        super().__init__(data)
+
+    @property
+    def hostname(self):
+        return self._get_property(name="hostname")
+
+    @property
+    def username(self):
+        return self._get_property(name="username")
+
+    @property
+    def password(self):
+        return self._get_property(name="password")
+
+    @property
+    def json_data(self):
+        json_data = self._data.copy()
+        json_data.pop("sut")
+        json_data.pop("infra")
+        json_data.pop("id")
+        json_data.pop("seq_num")
+        return json_data
 
 class Pdu(DataModel):
     def __init__(self, data):
@@ -165,8 +191,56 @@ class Simics(DataModel):
         super().__init__(data)
 
     @property
-    def host_address(self):
-        return self._get_property(name="host_address")
+    def real_time(self):
+        return self._get_property(name="real_time")
+    
+    @property
+    def serial_port(self):
+        return self._get_property(name="serial_port")
+    
+    @property
+    def host_name(self):
+        return self._get_property(name="host_name")
+    
+    @property
+    def host_port(self):
+        return self._get_property(name="host_port")
+    
+    @property
+    def host_username(self):
+        return self._get_property(name="host_username")
+    
+    @property
+    def host_password(self):
+        return self._get_property(name="host_password")
+    
+    @property
+    def service_port(self):
+        return self._get_property(name="service_port")
+    
+    @property
+    def os(self):
+        return self._get_property(name="os")
+    
+    @property
+    def network_user(self):
+        return self._get_property(name="network_user")
+    
+    @property
+    def network_password(self):
+        return self._get_property(name="network_password")
+    
+    @property
+    def app(self):
+        return self._get_property(name="app")
+    
+    @property
+    def script(self):
+        return self._get_property(name="script")
+    
+    @property
+    def project(self):
+        return self._get_property(name="project")
 
     @property
     def json_data(self):
@@ -174,4 +248,42 @@ class Simics(DataModel):
         json_data.pop("sut")
         json_data.pop("infra")
         json_data.pop("id")
+        return json_data
+
+class Impl(DataModel):
+    def __init__(self, data):
+        super().__init__(data)
+        if isinstance(data.get("parameters"), dict):
+            self._data["parameters"] = json.dumps(data.get("parameters"))
+
+    @property
+    def config_name(self):
+        return self._get_property(name="config_name")
+
+    @property
+    def provider_name(self):
+        return self._get_property(name="provider_name")
+
+    @property
+    def label(self):
+        return self._get_property(name="label")
+
+    @property
+    def use(self):
+        return self._get_property(name="use")
+
+    @property
+    def parameters(self):
+        params = self._get_property(name="parameters")
+        if params:
+            import json
+            return json.loads(params)
+
+    @property
+    def json_data(self):
+        json_data = self._data.copy()
+        json_data.pop("config_name")
+        json_data.pop("infra")
+        json_data.pop("id")
+        json_data["parameters"] = self.parameters
         return json_data
