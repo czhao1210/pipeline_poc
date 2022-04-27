@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from db_untils.models.common import Connection
-from db_untils.models.data_model import Pdu, Bmc, Ssh, Impl
+from db_untils.models.data_model import Pdu, Bmc, Ssh, Impl, Simics
 app = Flask(__name__)
 
 def to_yaml_dict(data_list, device_name):
@@ -27,6 +27,8 @@ def get_supported_instruments():
             supported.append("bmc")
         if conn.filter_device(infra=infra, sut=sut, device="ssh"):
             supported.append("ssh")
+        if conn.filter_device(infra=infra, sut=sut, device="simics"):
+            supported.append("simics")
     return jsonify(supported)
 
 @app.route("/instruments", methods=['GET'])
@@ -46,6 +48,8 @@ def get_instruments():
             instrument_list = [Bmc(p).json_data for p in instruments]
         elif instrument_name == "ssh":
             instrument_list = [Ssh(p).json_data for p in instruments]
+        elif instrument_name == "simics":
+            instrument_list = [Simics(p).json_data for p in instruments]
 
     ret_dict = dict()
     ret_dict.update(to_yaml_dict(instrument_list, instrument_name))
@@ -138,9 +142,10 @@ def new_instrument():
     id = 1
     seq_num = 0
     with Connection() as conn:
+        instruments = conn.filter_device(infra=infra, sut=sut, device=instrument_name)
         id = conn.suggest_id(instrument_name)
         instrument_to_add["id"] = id
-        instrument_to_add["seq_num"] = seq_num
+        instrument_to_add["seq_num"] = len(instruments)
         instrument_to_add["sut"] = sut
         instrument_to_add["infra"] = infra
         if instrument_name == "pdu":
@@ -149,6 +154,8 @@ def new_instrument():
             conn.add(Bmc(instrument_to_add))
         elif instrument_name == "ssh":
             conn.add(Ssh(instrument_to_add))
+        elif instrument_name == "simics":
+            conn.add(Simics(instrument_to_add))
         conn.commit()
     ret_dict = dict()
     return jsonify(ret_dict)
@@ -185,11 +192,19 @@ def remove_instrument():
                     conn.update(Pdu(i))
                 elif instrument_name == "bmc":
                     conn.update(Bmc(i))
+                elif instrument_name == "ssh":
+                    conn.update(Ssh(i))
+                elif instrument_name == "simics":
+                    conn.update(Simics(i))
             else:
                 if instrument_name == "pdu":
                     conn.remove(Pdu(i))
                 elif instrument_name == "bmc":
                     conn.remove(Bmc(i))
+                elif instrument_name == "ssh":
+                    conn.remove(Ssh(i))
+                elif instrument_name == "simics":
+                    conn.remove(Simics(i))
         conn.commit()
     ret_dict = dict()
     return jsonify(ret_dict)

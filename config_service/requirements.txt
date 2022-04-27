@@ -1,3 +1,4 @@
 flask
 db-sqlite3
 pandas
+paramiko==2.6.0

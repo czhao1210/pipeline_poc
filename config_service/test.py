@@ -151,6 +151,40 @@ def dump(table):
 # add_instrument(instrument_name="ssh", sut="sut0", infra="emr",
 #                hostname="sut0_host",port="22",
 #                username="username_ssh", password="password_ssh")
+# add_instrument(instrument_name="pdu", sut="sut0", infra="emr",
+#                ip="pdu.ip", username="pdu_username", password="password_pdu", port="22", outlets=[11,22], type="raritan")
+
+"""
+    id integer primary key,
+    seq_num int not null,
+    infra text not null,
+    sut text not null,
+    real_time text,
+    serial_port int not null,
+    host_name text,
+    host_port text,
+    host_username text,
+    host_password text,
+    service_port int,
+    os,
+    network_user text,
+    network_password text,
+    app text,
+    project text,
+    script text
+"""
+# add_instrument(instrument_name="simics", sut="na", infra="simcloud",
+#                real_time="True", serial_port=2022, host_name=r"", host_port="22",
+#                host_username="czhao", host_password=r"80198789*m*", service_port=2023, os="centos_stream",
+#                network_user="root", network_password="",
+#                app=r"/nfs/site/disks/simcloud_users/czhao/workarea/projects/gnr-6.0/2022ww15.5/simics",
+#                project=r"/nfs/site/disks/simcloud_users/czhao/workarea/projects/gnr-6.0/2022ww15.5",
+#                script=r"/nfs/site/disks/simcloud_users/czhao/workarea/projects/gnr-6.0/2022ww15.5/targets/birchstream/birchstream-ap.simics"
+#                )
+# print(dump("simics"))
+
+print(get_instrument_info("simics", "na", "simcloud"))
+# remove_instrument("simics", "na", "simcloud",0)
 # print("### dump impl ###")
 # print(dump("impl"))
 # print("### dump pdu ###")
