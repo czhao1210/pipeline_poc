@@ -2,8 +2,33 @@ import datetime
 import time
 
 from flask import Flask, jsonify, request
+from requests import Session
+
 app = Flask(__name__)
 from utils import ProvisioningTask, Pool
+
+def get_instrument_info(instrument_name, sut, infra, root):
+    import json
+    root = "http://10.239.219.248:5558"
+    source = f"{root}/instruments"
+    with Session() as s:
+        json_data = dict(infrastructure=infra, sut=sut, instrument=instrument_name)
+        resp = s.get(source, json=json_data, verify=False)
+        try:
+            return json.loads(resp.content)
+        except json.decoder.JSONDecodeError as e:
+            print(e)
+            return resp.content
+
+@app.route("/provisioning", methods=['GET'])
+def provision():
+    json_data = request.get_json()
+    sut = json_data["sut"]
+    infra = json_data["infrastructure"]
+    instrument_name = json_data["instrument"]
+    return jsonify(get_instrument_info(instrument_name=instrument_name, sut=sut, infra=infra, root="http://10.239.219.248:5558"))
+
+
 @app.route("/provisioning", methods=['POST'])
 def provision():
     json_data = request.get_json()

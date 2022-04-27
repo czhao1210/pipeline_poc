@@ -11,7 +11,7 @@ arg = parser.parse_args(sys.argv[1:])
 def add_instrument(instrument_name, sut, infra, **kwargs):
     instrument_to_add = kwargs
     import json
-    root = r"http://localhost:5555"
+    root = r"http://10.239.219.248:5555"
     source = f"{root}/instruments"
     with Session() as s:
         s.post(source, json=dict(instrument_data=instrument_to_add,
@@ -20,7 +20,7 @@ def add_instrument(instrument_name, sut, infra, **kwargs):
 
 def remove_instrument(instrument_name, sut, infra, seq_num):
     import json
-    root = r"http://localhost:5555"
+    root = r"http://10.239.219.248:5555"
     source = f"{root}/instruments"
     with Session() as s:
         s.delete(source, json=dict(seq_num=seq_num,
@@ -30,7 +30,7 @@ def remove_instrument(instrument_name, sut, infra, seq_num):
 def provisioning(infra, sut, target_os, bios, bmc, cpld1, cpld2, ww):
     remove_instrument("simics", "na", "simcloud",0)
     import json
-    root = r"http://localhost:5556"
+    root = r"http://10.239.219.248:5556"
     source = f"{root}/provisioning"
     with Session() as s:
         json_data = dict(infrastructure=infra, sut=sut, target_os=target_os,

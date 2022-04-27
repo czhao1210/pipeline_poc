@@ -138,7 +138,7 @@ def add_impl(**kwargs):
 
 def dump(table):
     import json
-    root = r"http://localhost:5555"
+    root = r"http://10.239.219.248:5555"
     source = f"{root}/"
     with Session() as s:
         ret = s.get(source, json=dict(table=table))
@@ -181,8 +181,8 @@ def dump(table):
 #                project=r"/nfs/site/disks/simcloud_users/czhao/workarea/projects/gnr-6.0/2022ww15.5",
 #                script=r"/nfs/site/disks/simcloud_users/czhao/workarea/projects/gnr-6.0/2022ww15.5/targets/birchstream/birchstream-ap.simics"
 #                )
-# print(dump("simics"))
-
+print(dump("simics"))
+exit(0)
 print(get_instrument_info("simics", "na", "simcloud"))
 # remove_instrument("simics", "na", "simcloud",0)
 # print("### dump impl ###")
