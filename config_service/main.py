@@ -56,6 +56,30 @@ def get_instruments():
     return jsonify(ret_dict)
 
 
+@app.route("/data", methods=['POST'])
+def get_instruments():
+    json_data = request.get_json()
+    sut = json_data["sut"]
+    infra = json_data["infrastructure"]
+    instrument_name = json_data["instrument"]
+    instrument_list = list()
+    with Connection() as conn:
+        # bmc = conn.filter_device(infra=infra, sut=sut, device="bmc")
+        instruments = conn.filter_device(infra=infra, sut=sut, device=instrument_name)
+        # bmc_list = [Bmc(b).json_data for b in bmc]
+        if instrument_name == "pdu":
+            instrument_list = [Pdu(p).json_data for p in instruments]
+        elif instrument_name == "bmc":
+            instrument_list = [Bmc(p).json_data for p in instruments]
+        elif instrument_name == "ssh":
+            instrument_list = [Ssh(p).json_data for p in instruments]
+        elif instrument_name == "simics":
+            instrument_list = [Simics(p).json_data for p in instruments]
+
+    ret_dict = dict()
+    ret_dict.update(to_yaml_dict(instrument_list, instrument_name))
+    return jsonify(ret_dict)
+
 @app.route("/implements", methods=['GET'])
 def get_impl():
     json_data = request.get_json()
